@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aksam Oto - Hasarlı Araç İhale ve Satış</title>
+  <title>Aksam Otomotiv & Aksam Oto Pazarı</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -16,229 +16,245 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <!-- TOP BLACK BAR -->
-  <div class="top-bar">
-    <div class="container top-bar-inner">
-      <div class="top-bar-left">
-        İster Üye Olup İhaleyle İster Garajdan Görerek Hemen Al
-      </div>
-      <div class="top-bar-right">
-        <span><i data-lucide="phone" class="icon-sm"></i> 444 15 48</span>
-        <span><i data-lucide="mail" class="icon-sm"></i> info@aksamoto.com.tr</span>
-        <a href="#"><i data-lucide="log-in" class="icon-sm"></i> Giriş Yap</a>
-        <a href="#"><i data-lucide="user-plus" class="icon-sm"></i> Üye Ol</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- MAIN HEADER -->
-  <header class="main-header">
-    <div class="container header-inner">
-      <div class="logo-container">
-        <!-- Replicating AKSAM logo visually -->
-        <div class="aksam-logo">
-          <i data-lucide="zap" class="logo-icon"></i>
-          <span class="logo-text">AKSAM</span>
-        </div>
-      </div>
-      
-      <nav class="main-nav">
-        <ul>
-          <li><a href="#">Anasayfa</a></li>
-          <li><a href="#" class="active">Tüm Araçlar</a></li>
-          <li><a href="#">Kurumsal</a></li>
-          <li><a href="#">İletişim</a></li>
-        </ul>
-      </nav>
-
-      <div class="header-actions">
-        <button class="btn btn-red-outline">
-          <i data-lucide="car"></i> Aracını Sat
-        </button>
-        <button class="btn btn-red-solid">
-          <i data-lucide="plus"></i> Araç Talep Edin
-        </button>
-        <button class="menu-btn"><i data-lucide="menu"></i></button>
-      </div>
-    </div>
-  </header>
-
-  <!-- BRANDS SLIDER (MOCKED) -->
-  <div class="brands-section">
-    <div class="container brands-inner">
-      <div class="brand-item"><div class="brand-circle">D</div><span>DACIA</span></div>
-      <div class="brand-item"><div class="brand-circle">F</div><span>FIAT</span></div>
-      <div class="brand-item"><div class="brand-circle">F</div><span>FORD</span></div>
-      <div class="brand-item"><div class="brand-circle">H</div><span>HONDA</span></div>
-      <div class="brand-item"><div class="brand-circle">H</div><span>HYUNDAI</span></div>
-      <div class="brand-item"><div class="brand-circle">I</div><span>IVECO</span></div>
-      <div class="brand-item"><div class="brand-circle">J</div><span>JEEP</span></div>
-      <div class="brand-item"><div class="brand-circle">M</div><span>MERCEDES</span></div>
-      <div class="brand-item"><div class="brand-circle">N</div><span>NISSAN</span></div>
-      <div class="brand-item"><div class="brand-circle">O</div><span>OPEL</span></div>
-      <div class="brand-item"><div class="brand-circle">P</div><span>PEUGEOT</span></div>
-      <div class="brand-item"><div class="brand-circle">R</div><span>RENAULT</span></div>
-      <div class="brand-item"><div class="brand-circle">S</div><span>SEAT</span></div>
-    </div>
-  </div>
-
-  <!-- MAIN LAYOUT -->
-  <main class="container main-layout">
+  <div id="app-container">
     
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      
-      <div class="search-box">
-        <div class="search-icon-bg"><i data-lucide="search"></i></div>
-        <input type="text" placeholder="Araç No İle Ara">
+    <!-- DASHBOARD VIEW -->
+    <div id="view-dashboard" class="view active">
+      <header class="app-header">
+        <div class="logo">
+          <i data-lucide="scan-line"></i>
+          <h1>Aksam Otomotiv</h1>
+        </div>
+        <button class="icon-btn"><i data-lucide="user"></i></button>
+      </header>
+
+      <main class="content-scrollable">
+        <div class="hero-card glass-panel mx-4 mt-2">
+          <h2>Yeni Ekspertiz</h2>
+          <p>Yapay zeka ile araç hasarlarını saniyeler içinde analiz edin ve pazar yerine yükleyin.</p>
+          <button id="btn-start-capture" class="btn-primary glow-effect mt-2">
+            <i data-lucide="camera"></i> 360° Fotoğraf Çekimi Başlat
+          </button>
+        </div>
+
+        <div class="recent-scans px-4 mt-4">
+          <div class="section-header">
+            <h3>Son Analizlerim</h3>
+            <button class="text-btn">Tümünü Gör</button>
+          </div>
+          
+          <div class="scan-list">
+            <!-- Simulated past user scan -->
+            <div class="scan-card glass-panel" onclick="app.viewCarDetail(0)">
+              <div class="scan-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80')"></div>
+              <div class="scan-details">
+                <h4>BMW 3 Serisi</h4>
+                <p class="scan-date">10 Dk Önce Analiz Edildi</p>
+                <div class="scan-status hasar-yuksek">Yüksek Hasar</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- GARAJ (MARKETPLACE) VIEW -->
+    <div id="view-garage" class="view">
+      <header class="app-header">
+        <div class="logo">
+          <i data-lucide="car"></i>
+          <h1>Garaj İlanları</h1>
+        </div>
+        <button class="icon-btn"><i data-lucide="filter"></i></button>
+      </header>
+
+      <main class="content-scrollable px-4 pb-20">
+        <div class="search-bar glass-panel mb-4">
+          <i data-lucide="search" class="text-muted"></i>
+          <input type="text" placeholder="Marka, model veya plaka ara...">
+        </div>
+
+        <div class="garage-grid" id="garage-grid-container">
+          <!-- Garage items will be populated by app.js -->
+        </div>
+      </main>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav glass-panel-bottom">
+      <button class="nav-item active" data-target="view-dashboard">
+        <i data-lucide="home"></i>
+        <span>Ana Sayfa</span>
+      </button>
+      <button class="nav-item" data-target="view-garage">
+        <i data-lucide="layout-grid"></i>
+        <span>Garaj</span>
+      </button>
+    </nav>
+
+
+    <!-- CAPTURE VIEW -->
+    <div id="view-capture" class="view">
+      <header class="app-header transparent">
+        <button class="icon-btn" onclick="app.showView('view-dashboard')"><i data-lucide="x"></i></button>
+        <div class="step-indicator">Aşama <span id="capture-step">1</span>/5</div>
+        <div style="width: 24px;"></div>
+      </header>
+
+      <div class="camera-viewport">
+        <div class="camera-feed" style="background-image: url('https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
+        <div class="camera-guideline">
+          <div class="car-silhouette" id="car-silhouette-text">Aracın Ön Kısmını Hizalayın</div>
+        </div>
       </div>
 
-      <div class="filter-section">
-        <div class="filter-header">
-          <h4>MARKALARA GÖRE KATEGORİ</h4>
-          <i data-lucide="chevron-up"></i>
+      <div class="capture-controls glass-panel-bottom">
+        <div class="capture-instructions">
+          <h3 id="capture-title">Ön Cephe Çekimi</h3>
+          <p>Aracın tamamının çerçevenin içinde olduğundan emin olun.</p>
         </div>
-        <ul class="filter-list">
-          <li><span>AUDI</span> <span class="count">2</span></li>
-          <li><span>BMW</span> <span class="count">3</span></li>
-          <li><span>BYD</span> <span class="count">1</span></li>
-          <li><span>CHERY</span> <span class="count">1</span></li>
-          <li><span>CITROEN</span> <span class="count">3</span></li>
-          <li><span>DACIA</span> <span class="count">5</span></li>
-          <li><span>FIAT</span> <span class="count">12</span></li>
-        </ul>
-      </div>
-
-      <div class="filter-section">
-        <div class="filter-header">
-          <h4>ARAÇ TİPİ</h4>
-          <i data-lucide="chevron-up"></i>
-        </div>
-        <ul class="filter-list-checkbox">
-          <li><input type="checkbox"> AĞIR TİCARİ</li>
-          <li><input type="checkbox"> BETON MİKSERİ</li>
-          <li><input type="checkbox"> BİNEK</li>
-          <li><input type="checkbox"> ÇEKİCİ</li>
-          <li><input type="checkbox"> DORSE</li>
-          <li><input type="checkbox"> HAFİF TİCARİ</li>
-          <li><input type="checkbox"> HAFİF TİCARİ (Soğutucu Dahil)</li>
-          <li><input type="checkbox"> İŞ MAKİNESİ</li>
-        </ul>
-      </div>
-
-    </aside>
-
-    <!-- CONTENT -->
-    <section class="content-area">
-      
-      <!-- Sorting Bar -->
-      <div class="sorting-bar">
-        <div class="sort-left">
-          <span>Sort:</span>
-          <select class="sort-select">
-            <option>Varsayılan Sıralama</option>
-          </select>
-          <button class="view-btn"><i data-lucide="list"></i></button>
-          <button class="view-btn active"><i data-lucide="grid"></i></button>
-        </div>
-        <div class="sort-right">
-          <strong>69 / 69</strong> araç gösteriliyor
-        </div>
-      </div>
-
-      <!-- CARS GRID -->
-      <div class="cars-grid">
         
-        <!-- CAR 1: Ford Ranger -->
-        <div class="car-card">
-          <div class="car-img" style="background-image: url('https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80')"></div>
-          <div class="car-info">
-            <h3 class="car-title">FORD RANGER XLT 4x4 2.0 ECOBLUE 170 10A/T</h3>
-            <div class="car-location"><i data-lucide="map-pin" class="icon-xs"></i> AKSAM SAMANDIRA</div>
-            
-            <div class="car-tags">
-              <span class="tag"><i data-lucide="car" class="icon-xs"></i> FORD</span>
-              <span class="tag"><i data-lucide="calendar" class="icon-xs"></i> 2023</span>
-              <span class="tag"><i data-lucide="activity" class="icon-xs"></i> 2.581 km</span>
-              <span class="tag"><i data-lucide="settings" class="icon-xs"></i> OTOMATİK</span>
-              <span class="tag"><i data-lucide="droplet" class="icon-xs"></i> DİZEL</span>
-              <span class="tag"><i data-lucide="file-text" class="icon-xs"></i> ÇEKME BELGELİ</span>
-              <span class="tag"><i data-lucide="alert-triangle" class="icon-xs"></i> ÇARPMA-ÇARPIŞMA</span>
-            </div>
-
-            <div class="car-footer">
-              <div class="car-price">1.445.000 ₺</div>
-              <div class="car-actions">
-                <button class="btn btn-gray-outline">Hemen Al</button>
-                <button class="btn btn-red-solid">İncele</button>
-              </div>
-            </div>
-          </div>
+        <div class="action-row">
+          <button class="icon-btn"><i data-lucide="image"></i></button>
+          <button id="btn-take-photo" class="btn-shutter">
+            <div class="shutter-inner"></div>
+          </button>
+          <button class="icon-btn"><i data-lucide="zap"></i></button>
         </div>
-
-        <!-- CAR 2: BMW X1 -->
-        <div class="car-card">
-          <div class="car-img" style="background-image: url('https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80')"></div>
-          <div class="car-info">
-            <h3 class="car-title">BMW X1 XDRIVE25e 1.5 245 M SPORT</h3>
-            <div class="car-location"><i data-lucide="map-pin" class="icon-xs"></i> AKSAM SAMANDIRA</div>
-            
-            <div class="car-tags">
-              <span class="tag"><i data-lucide="car" class="icon-xs"></i> BMW</span>
-              <span class="tag"><i data-lucide="calendar" class="icon-xs"></i> 2023</span>
-              <span class="tag"><i data-lucide="activity" class="icon-xs"></i> 2.200 km</span>
-              <span class="tag"><i data-lucide="settings" class="icon-xs"></i> OTOMATİK</span>
-              <span class="tag"><i data-lucide="droplet" class="icon-xs"></i> BENZİN / ELEKTRİK</span>
-              <span class="tag"><i data-lucide="file-text" class="icon-xs"></i> ÇEKME BELGELİ</span>
-              <span class="tag"><i data-lucide="alert-triangle" class="icon-xs"></i> ÇARPMA-ÇARPIŞMA</span>
-            </div>
-
-            <div class="car-footer">
-              <div class="car-price">2.445.000 ₺</div>
-              <div class="car-actions">
-                <button class="btn btn-gray-outline">Hemen Al</button>
-                <button class="btn btn-red-solid">İncele</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CAR 3: VW Amarok -->
-        <div class="car-card">
-          <div class="car-img" style="background-image: url('https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80')"></div>
-          <div class="car-info">
-            <h3 class="car-title">VOLKSWAGEN AMAROK STYLE PLUS 4MOTION 2.0 TDI 205 OV</h3>
-            <div class="car-location"><i data-lucide="map-pin" class="icon-xs"></i> AKSAM SAMANDIRA</div>
-            
-            <div class="car-tags">
-              <span class="tag"><i data-lucide="car" class="icon-xs"></i> VOLKSWAGEN</span>
-              <span class="tag"><i data-lucide="calendar" class="icon-xs"></i> 2023</span>
-              <span class="tag"><i data-lucide="activity" class="icon-xs"></i> 89.433 km</span>
-              <span class="tag"><i data-lucide="settings" class="icon-xs"></i> OTOMATİK</span>
-              <span class="tag"><i data-lucide="droplet" class="icon-xs"></i> DİZEL</span>
-              <span class="tag"><i data-lucide="file-text" class="icon-xs"></i> ÇEKME BELGELİ</span>
-              <span class="tag"><i data-lucide="alert-triangle" class="icon-xs"></i> ÇARPMA-ÇARPIŞMA</span>
-            </div>
-
-            <div class="car-footer">
-              <div class="car-price">1.465.000 ₺</div>
-              <div class="car-actions">
-                <button class="btn btn-gray-outline">Hemen Al</button>
-                <button class="btn btn-red-solid">İncele</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
-    </section>
+    </div>
 
-  </main>
+    <!-- AI ANALYSIS VIEW -->
+    <div id="view-analysis" class="view">
+      <div class="analysis-container">
+        <div class="analysis-image" style="background-image: url('https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')">
+          <div class="laser-scanner"></div>
+          <div class="scan-grid"></div>
+
+          <div class="bounding-box b-1 hidden" style="top: 60%; left: 15%; width: 25%; height: 20%;">
+            <div class="damage-label severity-high">
+              <span class="label-title">YENİ ÇİZİK</span>
+              <span class="label-desc">Ön Tampon, Sol</span>
+              <span class="severity-badge">YÜKSEK</span>
+            </div>
+            <svg class="box-lines" width="100%" height="100%"><rect x="0" y="0" width="100%" height="100%" /></svg>
+          </div>
+
+          <div class="bounding-box b-2 hidden" style="top: 45%; left: 70%; width: 15%; height: 15%;">
+            <div class="damage-label severity-mid">
+              <span class="label-title">GÖÇÜK</span>
+              <span class="label-desc">Ön Çamurluk, Sağ</span>
+              <span class="severity-badge">ORTA</span>
+            </div>
+            <svg class="box-lines" width="100%" height="100%"><rect x="0" y="0" width="100%" height="100%" /></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="analysis-overlay glass-panel-bottom">
+        <div class="status-header">
+          <h2>Yapay Zeka Analizi</h2>
+          <p id="analysis-status-text">Görüntüler işleniyor...</p>
+        </div>
+        
+        <div class="progress-bar">
+          <div class="progress-fill" id="analysis-progress"></div>
+        </div>
+
+        <button id="btn-view-report" class="btn-primary glow-effect hidden" onclick="app.viewCarDetail(0)" style="width: 100%; margin-top: 15px;">
+          Analiz Raporunu Gör <i data-lucide="arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- VEHICLE DETAIL & REPORT VIEW -->
+    <div id="view-report" class="view">
+      <header class="app-header glass-panel-bottom" style="position: absolute; width: 100%; z-index: 50;">
+        <button class="icon-btn" onclick="app.goBack()"><i data-lucide="arrow-left"></i></button>
+        <h2 id="detail-title">Araç Detayı</h2>
+        <button class="icon-btn"><i data-lucide="share-2"></i></button>
+      </header>
+
+      <main class="content-scrollable" style="padding-top: 80px; padding-bottom: 120px;">
+        
+        <div class="detail-gallery" id="detail-image" style="background-image: url('');">
+          <div class="status-pill" id="detail-status"></div>
+        </div>
+
+        <div class="px-4">
+          <div class="car-overview mt-4 mb-4">
+            <h1 class="text-2xl font-bold" id="detail-name">Araç Adı</h1>
+            <p class="text-muted mb-2" id="detail-info">Yıl | Kilometre | Şehir</p>
+            
+            <div class="sale-info glass-panel p-3">
+              <div class="row-between mb-1">
+                <span class="text-muted text-sm">Hemen Al (Rayiç) Fiyatı</span>
+                <span class="text-lg font-bold text-primary" id="detail-buy-price">₺0</span>
+              </div>
+              <div class="row-between">
+                <span class="text-muted text-sm">Güncel İhale Teklifi</span>
+                <span class="text-lg font-bold text-white" id="detail-auction-price">₺0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cost-comparison mb-6">
+            <h3 class="mb-3 text-lg">Maliyet Analizi (Tamir Senaryoları)</h3>
+            <div class="cost-cards">
+              
+              <div class="cost-card bg-red">
+                <div class="cost-icon"><i data-lucide="shield-alert"></i></div>
+                <div class="cost-info">
+                  <span class="cost-title">Sigorta Şişirmesi</span>
+                  <span class="cost-desc">Tramer tahmini</span>
+                  <span class="cost-val text-red" id="cost-insurance">₺0</span>
+                </div>
+              </div>
+
+              <div class="cost-card bg-blue">
+                <div class="cost-icon"><i data-lucide="tool"></i></div>
+                <div class="cost-info">
+                  <span class="cost-title">Yetkili Servis</span>
+                  <span class="cost-desc">Orijinal parça</span>
+                  <span class="cost-val text-blue" id="cost-authorized">₺0</span>
+                </div>
+              </div>
+
+              <div class="cost-card bg-green">
+                <div class="cost-icon"><i data-lucide="wrench"></i></div>
+                <div class="cost-info">
+                  <span class="cost-title">Özel Servis / Sanayi</span>
+                  <span class="cost-desc">Çıkma/Yan Sanayi</span>
+                  <span class="cost-val text-green" id="cost-mechanic">₺0</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="report-section" id="detected-damages-section">
+            <h3 class="mb-3 text-lg">Yapay Zeka Hasar Tespitleri</h3>
+            <div id="damages-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- FIXED BOTTOM SALE ACTIONS -->
+      <div class="sale-actions glass-panel-bottom">
+        <button class="btn-outline-primary" style="flex: 1;" onclick="alert('İhaleye teklif verme ekranı açılıyor...')">
+          <i data-lucide="gavel"></i> İhaleye Katıl
+        </button>
+        <button class="btn-primary" style="flex: 1;" onclick="alert('Satın alma ödeme ekranı açılıyor...')">
+          <i data-lucide="shopping-cart"></i> Hemen Al
+        </button>
+      </div>
+
+    </div>
+
+  </div>
 
   <script src="app.js"></script>
-  <script>
-    lucide.createIcons();
-  </script>
 </body>
 </html>
