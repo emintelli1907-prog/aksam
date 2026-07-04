@@ -11,6 +11,10 @@ class AppController {
       "Tavan ve İç Detay"
     ];
     
+    // Camera state
+    this.cameraStream = null;
+    this.capturedPhotos = []; // Store data URLs of captured photos
+
     // Mock Garage Data
     this.garageData = [
       {
@@ -91,18 +95,26 @@ class AppController {
   bindEvents() {
     document.getElementById('btn-start-capture')?.addEventListener('click', () => {
       this.captureStep = 1;
+      this.capturedPhotos = [];
+      this.clearThumbnails();
       this.updateCaptureUI();
       this.showView('view-capture');
+      this.startCamera();
     });
 
     document.getElementById('btn-take-photo')?.addEventListener('click', () => {
-      if (this.captureStep < this.maxSteps) {
-        this.captureStep++;
-        this.updateCaptureUI();
-      } else {
-        this.startAnalysis();
-      }
+      this.takePhoto();
     });
+
+    // Close button on capture view — stop camera
+    const closeBtn = document.querySelector('#view-capture .icon-btn');
+    if (closeBtn) {
+      // Remove inline onclick to handle properly
+      closeBtn.onclick = () => {
+        this.stopCamera();
+        this.showView('view-dashboard');
+      };
+    }
 
     document.querySelectorAll('.nav-item').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -113,6 +125,115 @@ class AppController {
       });
     });
   }
+
+  // ==================== CAMERA ====================
+
+  async startCamera() {
+    const video = document.getElementById('camera-video');
+    
+    // Try rear camera first (environment), fallback to any camera
+    const constraints = [
+      { video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false },
+      { video: { facingMode: 'environment' }, audio: false },
+      { video: true, audio: false }
+    ];
+
+    let stream = null;
+    for (const constraint of constraints) {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraint);
+        break;
+      } catch (err) {
+        console.warn('Camera constraint failed, trying next:', err.message);
+      }
+    }
+
+    if (!stream) {
+      alert('Kamera erişimi sağlanamadı!\n\nLütfen tarayıcınızın kamera izinlerini kontrol edin.\n\nNot: GitHub Pages üzerinde kamera kullanabilmek için HTTPS bağlantısı gereklidir.');
+      return;
+    }
+
+    this.cameraStream = stream;
+    video.srcObject = stream;
+    
+    // Wait for video to be ready
+    video.onloadedmetadata = () => {
+      video.play();
+    };
+  }
+
+  stopCamera() {
+    if (this.cameraStream) {
+      this.cameraStream.getTracks().forEach(track => track.stop());
+      this.cameraStream = null;
+    }
+    const video = document.getElementById('camera-video');
+    if (video) video.srcObject = null;
+  }
+
+  takePhoto() {
+    const video = document.getElementById('camera-video');
+    const canvas = document.getElementById('camera-canvas');
+    
+    if (!video || !video.srcObject) {
+      // If camera not available, still allow advancing steps for demo
+      this.advanceStep();
+      return;
+    }
+
+    // Set canvas to video dimensions
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Get the image data URL
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    this.capturedPhotos.push(dataUrl);
+
+    // Flash effect
+    this.triggerFlash();
+
+    // Add thumbnail
+    this.addThumbnail(dataUrl);
+
+    // Advance to next step
+    this.advanceStep();
+  }
+
+  advanceStep() {
+    if (this.captureStep < this.maxSteps) {
+      this.captureStep++;
+      this.updateCaptureUI();
+    } else {
+      this.stopCamera();
+      this.startAnalysis();
+    }
+  }
+
+  triggerFlash() {
+    const flash = document.getElementById('capture-flash');
+    if (!flash) return;
+    flash.classList.add('active');
+    setTimeout(() => flash.classList.remove('active'), 150);
+  }
+
+  addThumbnail(dataUrl) {
+    const container = document.getElementById('captured-thumbnails');
+    if (!container) return;
+    const img = document.createElement('img');
+    img.src = dataUrl;
+    img.alt = `Çekim ${this.captureStep}`;
+    container.appendChild(img);
+  }
+
+  clearThumbnails() {
+    const container = document.getElementById('captured-thumbnails');
+    if (container) container.innerHTML = '';
+  }
+
+  // ==================== GARAGE ====================
 
   renderGarage() {
     const container = document.getElementById('garage-grid-container');
@@ -146,6 +267,8 @@ class AppController {
     lucide.createIcons();
   }
 
+  // ==================== UI HELPERS ====================
+
   updateCaptureUI() {
     const titleEl = document.getElementById('capture-title');
     const stepEl = document.getElementById('capture-step');
@@ -163,7 +286,6 @@ class AppController {
   }
 
   goBack() {
-    // If coming from analysis, go home. Else, assume Garage is previous.
     if(this.currentView === 'view-report') {
       this.showView('view-garage');
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -173,8 +295,19 @@ class AppController {
     }
   }
 
+  // ==================== AI ANALYSIS ====================
+
   startAnalysis() {
     this.showView('view-analysis');
+    
+    // Use the last captured photo as analysis background, or fallback
+    const analysisImg = document.getElementById('analysis-image-bg');
+    if (this.capturedPhotos.length > 0) {
+      analysisImg.style.backgroundImage = `url('${this.capturedPhotos[this.capturedPhotos.length - 1]}')`;
+    } else {
+      analysisImg.style.backgroundImage = `url('https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')`;
+    }
+
     const container = document.querySelector('.analysis-image');
     container.classList.add('scanning');
     
@@ -204,6 +337,8 @@ class AppController {
       btnReport.classList.remove('hidden');
     }, 5000);
   }
+
+  // ==================== CAR DETAIL ====================
 
   viewCarDetail(carId) {
     const car = this.garageData.find(c => c.id === carId) || this.garageData[0];

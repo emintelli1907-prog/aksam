@@ -209,12 +209,43 @@ button { font-family: var(--font-main); cursor: pointer; border: none; backgroun
 .g-price-val { font-size: 1.1rem; font-weight: 700; color: #fff; }
 .g-price-val.primary { color: var(--primary); font-size: 1.2rem; }
 
-/* CAPTURE & AI (retained from previous) */
+/* CAPTURE & AI */
 .step-indicator { background: rgba(0,0,0,0.5); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; backdrop-filter: blur(4px); }
-.camera-viewport { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.camera-feed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: brightness(0.7); }
+.camera-viewport { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; }
+
+#camera-video {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: 1;
+}
+#camera-canvas { display: none; }
+
 .camera-guideline { width: 80%; height: 60%; border: 2px dashed rgba(255,255,255,0.4); border-radius: 20px; position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; }
 .car-silhouette { color: rgba(255,255,255,0.7); font-size: 1.2rem; font-weight: 600; text-align: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+
+/* Flash effect on capture */
+.capture-flash {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: #fff; z-index: 5; opacity: 0; pointer-events: none;
+  transition: opacity 0.05s ease;
+}
+.capture-flash.active {
+  opacity: 0.8;
+  transition: opacity 0.05s ease;
+}
+
+/* Captured photo thumbnails strip */
+.captured-thumbnails {
+  position: absolute; bottom: 10px; left: 10px;
+  display: flex; gap: 8px; z-index: 4;
+}
+.captured-thumbnails img {
+  width: 48px; height: 48px; border-radius: 8px;
+  object-fit: cover; border: 2px solid var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  animation: thumbPop 0.3s ease;
+}
+@keyframes thumbPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
 .capture-controls { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 24px 40px; display: flex; flex-direction: column; gap: 24px; z-index: 10; }
 .capture-instructions { text-align: center; }
 .capture-instructions h3 { font-size: 1.3rem; margin-bottom: 4px; }

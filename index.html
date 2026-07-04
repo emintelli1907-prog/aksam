@@ -102,10 +102,13 @@
       </header>
 
       <div class="camera-viewport">
-        <div class="camera-feed" style="background-image: url('https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
+        <video id="camera-video" autoplay playsinline muted></video>
+        <canvas id="camera-canvas" class="hidden"></canvas>
         <div class="camera-guideline">
           <div class="car-silhouette" id="car-silhouette-text">Aracın Ön Kısmını Hizalayın</div>
         </div>
+        <div id="capture-flash" class="capture-flash"></div>
+        <div id="captured-thumbnails" class="captured-thumbnails"></div>
       </div>
 
       <div class="capture-controls glass-panel-bottom">
@@ -127,7 +130,7 @@
     <!-- AI ANALYSIS VIEW -->
     <div id="view-analysis" class="view">
       <div class="analysis-container">
-        <div class="analysis-image" style="background-image: url('https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')">
+        <div class="analysis-image" id="analysis-image-bg">
           <div class="laser-scanner"></div>
           <div class="scan-grid"></div>
 
