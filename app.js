@@ -19,23 +19,19 @@ class AppController {
     // Mock Garage Data
     this.garageData = [
       {
-        id: 0,
-        brand: 'BMW',
-        model: 'X1 XDRIVE25e 1.5 245 M SPORT',
+        id: 0, brand: 'BMW', model: 'X1 XDRIVE25e 1.5 245 M SPORT',
         img: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
         year: 2023, km: '2.200', location: 'Aksam Samandıra',
         status: 'Yüksek Hasar', statusClass: 'hasar-yuksek',
         priceBuyNow: '2.445.000', priceAuction: '1.950.000',
         costs: { insurance: '520.000', authorized: '380.000', mechanic: '150.000' },
         damages: [
-          { title: "GÖÇÜK VE YIRTIK", desc: "Ön Tampon ve Sol Çamurluk Ağır Hasarlı. Değişim şart.", cost: "45.000", severity: "YÜKSEK", class: "hasar-yuksek" },
+          { title: "GÖÇÜK VE YIRTIK", desc: "Ön Tampon ve Sol Çamurluk Ağır Hasarlı.", cost: "45.000", severity: "YÜKSEK", class: "hasar-yuksek" },
           { title: "ÇİZİK", desc: "Sol Ön Kapı derin çizik.", cost: "12.000", severity: "ORTA", class: "hasar-orta" }
         ]
       },
       {
-        id: 1,
-        brand: 'FORD',
-        model: 'RANGER XLT 4x4 2.0 ECOBLUE',
+        id: 1, brand: 'FORD', model: 'RANGER XLT 4x4 2.0 ECOBLUE',
         img: 'https://images.unsplash.com/photo-1551830820-330a71b99659?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
         year: 2023, km: '2.581', location: 'Aksam Samandıra',
         status: 'Orta Hasar', statusClass: 'hasar-orta',
@@ -46,9 +42,7 @@ class AppController {
         ]
       },
       {
-        id: 2,
-        brand: 'VOLKSWAGEN',
-        model: 'AMAROK STYLE PLUS 4MOTION',
+        id: 2, brand: 'VOLKSWAGEN', model: 'AMAROK STYLE PLUS 4MOTION',
         img: 'https://images.unsplash.com/photo-1609521263047-f8f205293f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
         year: 2023, km: '89.433', location: 'Aksam Samandıra',
         status: 'Yüksek Hasar', statusClass: 'hasar-yuksek',
@@ -70,23 +64,39 @@ class AppController {
   }
 
   bindEvents() {
-    // Start capture button
+    // Start capture flow
     document.getElementById('btn-start-capture')?.addEventListener('click', () => {
       this.captureStep = 1;
       this.capturedPhotos = [];
       this.cameraReady = false;
       this.clearThumbnails();
+      this.hidePreview();
       this.updateCaptureUI();
       this.showView('view-capture');
       this.startCamera();
     });
 
-    // Take photo button
+    // Shutter button: if live camera is active, take snapshot. Otherwise, trigger native file input.
     document.getElementById('btn-take-photo')?.addEventListener('click', () => {
-      this.takePhoto();
+      if (this.cameraReady) {
+        this.takePhotoFromVideo();
+      } else {
+        // Trigger the hidden native camera file input
+        document.getElementById('file-input-camera')?.click();
+      }
     });
 
-    // Close capture button (stop camera + go back)
+    // Native camera file input (capture="environment" opens camera app on mobile)
+    document.getElementById('file-input-camera')?.addEventListener('change', (e) => {
+      this.handleFileSelected(e);
+    });
+
+    // Gallery file input (no capture attribute = opens gallery/file picker)
+    document.getElementById('file-input-gallery')?.addEventListener('change', (e) => {
+      this.handleFileSelected(e);
+    });
+
+    // Close capture
     document.getElementById('btn-close-capture')?.addEventListener('click', () => {
       this.stopCamera();
       this.showView('view-dashboard');
@@ -96,151 +106,113 @@ class AppController {
     document.querySelectorAll('.nav-item').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        const targetBtn = e.currentTarget;
-        targetBtn.classList.add('active');
-        this.showView(targetBtn.dataset.target);
+        e.currentTarget.classList.add('active');
+        this.showView(e.currentTarget.dataset.target);
       });
     });
   }
 
-  // ==================== CAMERA ====================
+  // ==================== CAMERA (getUserMedia) ====================
 
   async startCamera() {
     const video = document.getElementById('camera-video');
     if (!video) return;
 
-    // Check if getUserMedia is supported
+    // Check API support
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      this.showCameraError(
-        'Bu tarayıcı kamera erişimini desteklemiyor.\n\n' +
-        'Lütfen Google Chrome veya Safari kullanın.\n\n' +
-        'Not: Dosyayı doğrudan açtıysanız (file://), kamera çalışmaz. ' +
-        'HTTPS üzerinden (GitHub Pages) veya localhost ile açmanız gerekmektedir.'
-      );
-      return;
+      console.warn('getUserMedia desteklenmiyor. Dosya seçici (native camera) kullanılacak.');
+      this.cameraReady = false;
+      return; // Shutter will fall back to file input
     }
 
-    // Try different constraints in order of preference
     const attempts = [
-      // 1. Rear camera, high resolution
       { video: { facingMode: { exact: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false },
-      // 2. Rear camera, any resolution
       { video: { facingMode: 'environment' }, audio: false },
-      // 3. Any camera
       { video: true, audio: false }
     ];
 
     let stream = null;
-    let lastError = null;
-
     for (const constraints of attempts) {
       try {
         stream = await navigator.mediaDevices.getUserMedia(constraints);
         break;
       } catch (err) {
-        lastError = err;
-        console.warn('Kamera denemesi başarısız:', constraints, err.name, err.message);
+        console.warn('Kamera denemesi:', err.name, err.message);
       }
     }
 
     if (!stream) {
-      let errorMsg = 'Kamera açılamadı.\n\n';
-      
-      if (lastError) {
-        switch (lastError.name) {
-          case 'NotAllowedError':
-          case 'PermissionDeniedError':
-            errorMsg += '❌ Kamera izni reddedildi.\n\n' +
-              'Çözüm: Tarayıcınızın adres çubuğundaki kamera/kilit ikonuna tıklayıp izin verin, ardından sayfayı yenileyin.';
-            break;
-          case 'NotFoundError':
-          case 'DevicesNotFoundError':
-            errorMsg += '❌ Kamera bulunamadı.\n\n' +
-              'Bu cihazda kullanılabilir bir kamera algılanamadı.';
-            break;
-          case 'NotReadableError':
-          case 'TrackStartError':
-            errorMsg += '❌ Kamera meşgul veya erişilemiyor.\n\n' +
-              'Başka bir uygulama kamerayı kullanıyor olabilir. Lütfen diğer uygulamaları kapatıp tekrar deneyin.';
-            break;
-          case 'OverconstrainedError':
-            errorMsg += '❌ İstenen kamera özellikleri desteklenmiyor.';
-            break;
-          case 'SecurityError':
-            errorMsg += '❌ Güvenlik hatası.\n\n' +
-              'Kamera, güvenli bağlantı (HTTPS) gerektirir. Dosyayı file:// ile açtıysanız çalışmaz.\n' +
-              'GitHub Pages linki üzerinden açın: https://emintelli1907-prog.github.io/aksam/';
-            break;
-          default:
-            errorMsg += `Hata: ${lastError.name} - ${lastError.message}`;
-        }
-      }
-      
-      this.showCameraError(errorMsg);
-      return;
+      console.warn('Kamera erişimi sağlanamadı. Dosya seçici kullanılacak.');
+      this.cameraReady = false;
+      return; // Shutter will fall back to file input
     }
 
-    // Success — attach stream to video
     this.cameraStream = stream;
     video.srcObject = stream;
-    
     video.onloadedmetadata = () => {
       video.play().then(() => {
         this.cameraReady = true;
-        console.log('✅ Kamera başarıyla açıldı');
-      }).catch(err => {
-        console.error('Video oynatılamadı:', err);
+        console.log('✅ Canlı kamera aktif');
+      }).catch(() => {
+        this.cameraReady = false;
       });
     };
   }
 
-  showCameraError(message) {
-    alert(message);
-    // Still allow demo flow without real camera
-    this.cameraReady = false;
-  }
-
   stopCamera() {
     if (this.cameraStream) {
-      this.cameraStream.getTracks().forEach(track => {
-        track.stop();
-      });
+      this.cameraStream.getTracks().forEach(t => t.stop());
       this.cameraStream = null;
     }
     this.cameraReady = false;
     const video = document.getElementById('camera-video');
-    if (video) {
-      video.srcObject = null;
-    }
+    if (video) video.srcObject = null;
   }
 
-  takePhoto() {
+  // ==================== PHOTO CAPTURE ====================
+
+  // Method 1: Snapshot from live video
+  takePhotoFromVideo() {
     const video = document.getElementById('camera-video');
     const canvas = document.getElementById('camera-canvas');
-    
-    if (this.cameraReady && video && video.readyState >= 2) {
-      // Real camera capture
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-      this.capturedPhotos.push(dataUrl);
-      
-      // Flash effect
-      this.triggerFlash();
-      
-      // Add thumbnail
-      this.addThumbnail(dataUrl);
-    } else {
-      // Demo mode — no camera available, flash anyway for UX
-      this.triggerFlash();
-    }
+    if (!video || video.readyState < 2) return;
 
-    // Advance to next step regardless
-    this.advanceStep();
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    this.processCapture(dataUrl);
+  }
+
+  // Method 2: From file input (native camera app or gallery)
+  handleFileSelected(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      this.processCapture(dataUrl);
+    };
+    reader.readAsDataURL(file);
+
+    // Reset input so same file can be re-selected
+    event.target.value = '';
+  }
+
+  // Common processing after capture (from any source)
+  processCapture(dataUrl) {
+    this.capturedPhotos.push(dataUrl);
+    this.triggerFlash();
+    this.addThumbnail(dataUrl);
+    this.showPreview(dataUrl);
+
+    // Auto-advance after a brief delay to show the preview
+    setTimeout(() => {
+      this.hidePreview();
+      this.advanceStep();
+    }, 800);
   }
 
   advanceStep() {
@@ -252,6 +224,8 @@ class AppController {
       this.startAnalysis();
     }
   }
+
+  // ==================== UI EFFECTS ====================
 
   triggerFlash() {
     const flash = document.getElementById('capture-flash');
@@ -272,6 +246,18 @@ class AppController {
   clearThumbnails() {
     const container = document.getElementById('captured-thumbnails');
     if (container) container.innerHTML = '';
+  }
+
+  showPreview(dataUrl) {
+    const preview = document.getElementById('preview-image');
+    if (!preview) return;
+    preview.src = dataUrl;
+    preview.classList.remove('hidden');
+  }
+
+  hidePreview() {
+    const preview = document.getElementById('preview-image');
+    if (preview) preview.classList.add('hidden');
   }
 
   // ==================== GARAGE ====================
@@ -330,7 +316,7 @@ class AppController {
     if (this.currentView === 'view-report') {
       this.showView('view-garage');
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.querySelector('[data-target="view-garage"]').classList.add('active');
+      document.querySelector('[data-target="view-garage"]')?.classList.add('active');
     } else {
       this.showView('view-dashboard');
     }
@@ -341,7 +327,6 @@ class AppController {
   startAnalysis() {
     this.showView('view-analysis');
     
-    // Use last captured photo or fallback
     const analysisImg = document.getElementById('analysis-image-bg');
     if (this.capturedPhotos.length > 0) {
       analysisImg.style.backgroundImage = `url('${this.capturedPhotos[this.capturedPhotos.length - 1]}')`;
@@ -364,12 +349,12 @@ class AppController {
     setTimeout(() => { 
       progressFill.style.width = '60%'; 
       statusText.innerText = 'Maliyet hesaplanıyor...';
-      document.querySelector('.b-1').classList.remove('hidden');
+      document.querySelector('.b-1')?.classList.remove('hidden');
     }, 2500);
     setTimeout(() => { 
       progressFill.style.width = '85%'; 
       statusText.innerText = 'Rapor oluşturuluyor...';
-      document.querySelector('.b-2').classList.remove('hidden');
+      document.querySelector('.b-2')?.classList.remove('hidden');
     }, 4000);
     setTimeout(() => { 
       progressFill.style.width = '100%'; 

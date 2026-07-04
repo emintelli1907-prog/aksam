@@ -44,7 +44,6 @@
           </div>
           
           <div class="scan-list">
-            <!-- Simulated past user scan -->
             <div class="scan-card glass-panel" onclick="app.viewCarDetail(0)">
               <div class="scan-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80')"></div>
               <div class="scan-details">
@@ -75,7 +74,6 @@
         </div>
 
         <div class="garage-grid" id="garage-grid-container">
-          <!-- Garage items will be populated by app.js -->
         </div>
       </main>
     </div>
@@ -101,12 +99,19 @@
         <div style="width: 24px;"></div>
       </header>
 
-      <div class="camera-viewport">
+      <div class="camera-viewport" id="camera-viewport">
+        <!-- Live video preview (getUserMedia) -->
         <video id="camera-video" autoplay playsinline muted></video>
         <canvas id="camera-canvas" class="hidden"></canvas>
-        <div class="camera-guideline">
+
+        <!-- Preview of last captured/selected image -->
+        <img id="preview-image" class="preview-image hidden" alt="Çekim Önizleme">
+
+        <!-- Guideline overlay -->
+        <div class="camera-guideline" id="camera-guideline">
           <div class="car-silhouette" id="car-silhouette-text">Aracın Ön Kısmını Hizalayın</div>
         </div>
+
         <div id="capture-flash" class="capture-flash"></div>
         <div id="captured-thumbnails" class="captured-thumbnails"></div>
       </div>
@@ -114,14 +119,26 @@
       <div class="capture-controls glass-panel-bottom">
         <div class="capture-instructions">
           <h3 id="capture-title">Ön Cephe Çekimi</h3>
-          <p>Aracın tamamının çerçevenin içinde olduğundan emin olun.</p>
+          <p>Deklanşöre basın veya galeriden fotoğraf seçin.</p>
         </div>
         
         <div class="action-row">
-          <button class="icon-btn"><i data-lucide="image"></i></button>
-          <button id="btn-take-photo" class="btn-shutter">
-            <div class="shutter-inner"></div>
-          </button>
+          <!-- Gallery / File picker button (always works) -->
+          <label class="icon-btn gallery-label" for="file-input-gallery" title="Galeriden Seç">
+            <i data-lucide="image"></i>
+          </label>
+          <input type="file" id="file-input-gallery" accept="image/*" class="hidden-input">
+
+          <!-- Main shutter button -->
+          <div class="shutter-wrapper">
+            <button id="btn-take-photo" class="btn-shutter" title="Fotoğraf Çek">
+              <div class="shutter-inner"></div>
+            </button>
+            <!-- Hidden native camera file input (mobile: opens camera app directly) -->
+            <input type="file" id="file-input-camera" accept="image/*" capture="environment" class="hidden-input">
+          </div>
+
+          <!-- Flash icon (cosmetic) -->
           <button class="icon-btn"><i data-lucide="zap"></i></button>
         </div>
       </div>
@@ -238,7 +255,6 @@
           <div class="report-section" id="detected-damages-section">
             <h3 class="mb-3 text-lg">Yapay Zeka Hasar Tespitleri</h3>
             <div id="damages-list">
-              <!-- Dynamically populated -->
             </div>
           </div>
         </div>
