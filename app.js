@@ -16,42 +16,45 @@ class AppController {
     this.cameraReady = false;
     this.capturedPhotos = [];
 
-    // Mock Garage Data
+    // Real Garage Data from aksamoto.com.tr
     this.garageData = [
-      {
-        id: 0, brand: 'BMW', model: 'X1 XDRIVE25e 1.5 245 M SPORT',
-        img: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-        year: 2023, km: '2.200', location: 'Aksam Samandıra',
-        status: 'Yüksek Hasar', statusClass: 'hasar-yuksek',
-        priceBuyNow: '2.445.000', priceAuction: '1.950.000',
-        costs: { insurance: '520.000', authorized: '380.000', mechanic: '150.000' },
-        damages: [
-          { title: "GÖÇÜK VE YIRTIK", desc: "Ön Tampon ve Sol Çamurluk Ağır Hasarlı.", cost: "45.000", severity: "YÜKSEK", class: "hasar-yuksek" },
-          { title: "ÇİZİK", desc: "Sol Ön Kapı derin çizik.", cost: "12.000", severity: "ORTA", class: "hasar-orta" }
-        ]
-      },
-      {
-        id: 1, brand: 'FORD', model: 'RANGER XLT 4x4 2.0 ECOBLUE',
-        img: 'https://images.unsplash.com/photo-1551830820-330a71b99659?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-        year: 2023, km: '2.581', location: 'Aksam Samandıra',
-        status: 'Orta Hasar', statusClass: 'hasar-orta',
-        priceBuyNow: '1.445.000', priceAuction: '1.200.000',
-        costs: { insurance: '210.000', authorized: '145.000', mechanic: '85.000' },
-        damages: [
-          { title: "KAPORTA GÖÇÜĞÜ", desc: "Sağ arka çamurluk boyasız onarım mümkün.", cost: "15.000", severity: "DÜŞÜK", class: "hasar-dusuk" }
-        ]
-      },
-      {
-        id: 2, brand: 'VOLKSWAGEN', model: 'AMAROK STYLE PLUS 4MOTION',
-        img: 'https://images.unsplash.com/photo-1609521263047-f8f205293f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-        year: 2023, km: '89.433', location: 'Aksam Samandıra',
-        status: 'Yüksek Hasar', statusClass: 'hasar-yuksek',
-        priceBuyNow: '1.465.000', priceAuction: '1.100.000',
-        costs: { insurance: '480.000', authorized: '310.000', mechanic: '190.000' },
-        damages: [
-          { title: "TAVAN EZİLMESİ", desc: "Tavan sacı ve direklerde hasar mevcut.", cost: "110.000", severity: "YÜKSEK", class: "hasar-yuksek" }
-        ]
-      }
+      { id: 0, aracNo: '201737654', brand: 'BMW', model: 'X1 XDRIVE25e 1.5 245 M SPORT', img: 'https://images.aksamoto.com.tr/2026/04/28/y2287348_20260428143107.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201737654/hasarli-oto-2025-bmw-x1-xdrive25e-15-245-m-sport' },
+      { id: 1, aracNo: '201740780', brand: 'VOLKSWAGEN', model: 'AMAROK STYLE PLUS 4MOTION 2.0 TDI 205 OV', img: 'https://images.aksamoto.com.tr/2026/06/26/y4812621_20260626094931.jpeg', year: 2023, detayUrl: 'https://aksamoto.com.tr/detay/201740780/hasarli-oto-2023-volkswagen-amarok-style-plus-4motion-20-tdi-205-ov' },
+      { id: 2, aracNo: '201740847', brand: 'FORD', model: 'RANGER XLT 4x4 2.0 ECOBLUE 170', img: 'https://images.aksamoto.com.tr/2026/03/17/y5467257_20260317085632.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201740847/hasarli-oto-2025-ford-ranger-xlt-4x4-20-ecoblue-170-10a-t' },
+      { id: 3, aracNo: '201742359', brand: 'FORD', model: 'RANGER WILDTRAK 4x4 2.0 ECOBLUE 205', img: 'https://images.aksamoto.com.tr/2026/07/03/y7728495_20260703100355.jpeg', year: 2024, detayUrl: 'https://aksamoto.com.tr/detay/201742359/hasarli-oto-2024-ford-ranger-wildtrak-4x4-20-ecoblue-205-10at' },
+      { id: 4, aracNo: '201743217', brand: 'FIAT', model: 'EGEA SEDAN EASY 1.3 M.JET 95', img: 'https://images.aksamoto.com.tr/2026/06/23/y1329095_20260623115658.jpeg', year: 2024, detayUrl: 'https://aksamoto.com.tr/detay/201743217/hasarli-oto-2024-tofas-fiat-egea-sedan-easy-13-mjet-95-e6d' },
+      { id: 5, aracNo: '201743534', brand: 'CITROEN', model: 'C3 1.4 VTI (95) CONFORT BMP', img: 'https://images.aksamoto.com.tr/2026/07/01/y1191069_20260701165034.jpeg', year: 2012, detayUrl: 'https://aksamoto.com.tr/detay/201743534/hasarli-oto-2012-citroen-c3-14-vti-95-confort-bmp' },
+      { id: 6, aracNo: '201744154', brand: 'TOYOTA', model: 'HILUX 2.4 D-4D 150 HI-CRUISER A/T', img: 'https://images.aksamoto.com.tr/2026/06/03/y6687383_20260603134207.jpeg', year: 2022, detayUrl: 'https://aksamoto.com.tr/detay/201744154/hasarli-oto-2022-toyota-hilux-24-d-4d-150-hi-cruiser-a-t' },
+      { id: 7, aracNo: '201744206', brand: 'SEAT', model: 'ARONA 1.0 ECOTSI 110 DSG XCELLENCE', img: 'https://images.aksamoto.com.tr/2026/06/27/y961819_20260627091335.jpeg', year: 2021, detayUrl: 'https://aksamoto.com.tr/detay/201744206/hasarli-oto-2021-seat-arona-10-ecotsi-110-dsg-s-s-xcellence' },
+      { id: 8, aracNo: '201745904', brand: 'FORD', model: 'TRANSIT 15+1 MINIBUS 2.0', img: 'https://images.aksamoto.com.tr/2026/06/06/y1099627_20260606154459.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201745904/hasarli-oto-2025-ford-transit-15-1-minibus-20' },
+      { id: 9, aracNo: '201746307', brand: 'VOLKSWAGEN', model: 'TRANSPORTER CITY VAN 2.0 150 DSG', img: 'https://images.aksamoto.com.tr/2026/06/11/y8839746_20260611090427.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201746307/hasarli-oto-2025-volkswagen-transporter-city-van-20-5-1-uzun-150-dsg' },
+      { id: 10, aracNo: '201746346', brand: 'HYUNDAI', model: 'TUCSON FL 1.6 T-GDI ELITE PLUS DCT', img: 'https://images.aksamoto.com.tr/2026/06/13/y2584949_20260613090756.jpeg', year: 2024, detayUrl: 'https://aksamoto.com.tr/detay/201746346/hasarli-oto-2024-hyundai-tucson-fl-16-t-gdi-elite-plus-dct' },
+      { id: 11, aracNo: '201746769', brand: 'VOLKSWAGEN', model: 'CADDY 2.0 TDI STYLE DSG', img: 'https://images.aksamoto.com.tr/2026/06/18/y2093044_20260618165204.jpeg', year: 2022, detayUrl: 'https://aksamoto.com.tr/detay/201746769/hasarli-oto-2022-volkswagen-caddy-20-tdi-style-dsg' },
+      { id: 12, aracNo: '201747235', brand: 'SUZUKI', model: 'VITARA 1.4 BOOSTERJET 4x4 AT GLX', img: 'https://images.aksamoto.com.tr/2026/06/20/y3826696_20260620095953.jpeg', year: 2019, detayUrl: 'https://aksamoto.com.tr/detay/201747235/hasarli-oto-2019-suzuki-vitara-14-boosterjet-4x4-at-glx' },
+      { id: 13, aracNo: '201747327', brand: 'RENAULT', model: 'MASTER VAN 13 M3 2.3 DCI 150 E6', img: 'https://images.aksamoto.com.tr/2026/06/20/y4395780_20260620111901.jpeg', year: 2019, detayUrl: 'https://aksamoto.com.tr/detay/201747327/hasarli-oto-2019-renault-master-van-13-m3-23-dci-150-e6' },
+      { id: 14, aracNo: '201747457', brand: 'FIAT', model: 'DUCATO VAN 2.3 150 MJET S9', img: 'https://images.aksamoto.com.tr/2026/06/27/y5747750_20260627140149.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201747457/hasarli-oto-2025-fiat-ducato-van-23-150-mjet-s9' },
+      { id: 15, aracNo: '201747704', brand: 'PEUGEOT', model: 'PARTNER VAN UZUN COMFORT 1.5 BLUEHDI', img: 'https://images.aksamoto.com.tr/2026/07/04/y4697651_20260704085832.jpeg', year: 2024, detayUrl: 'https://aksamoto.com.tr/detay/201747704/hasarli-oto-2024-peugeot-partner-van-uzun-comfort-15-bluehdi-100-ss' },
+      { id: 16, aracNo: '201747767', brand: 'FIAT', model: 'SCUDO VAN MAXI L3 BUSINESS MJET3 2.0 145', img: 'https://images.aksamoto.com.tr/2026/06/30/y5459440_20260630090455.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201747767/hasarli-oto-2025-fiat-scudo-van-maxi-l3-business-mjet3-20-145' },
+      { id: 17, aracNo: '201748118', brand: 'RENAULT', model: 'MEGANE SEDAN TOUCH 1.5 DCI EDC 110', img: 'https://images.aksamoto.com.tr/2026/07/01/y1989539_20260701105027.jpeg', year: 2018, detayUrl: 'https://aksamoto.com.tr/detay/201748118/hasarli-oto-2018-renault-megane-sedan-touch-15-dci-edc-110' },
+      { id: 18, aracNo: '201748188', brand: 'FORD', model: 'RANGER WILDTRAK 4x4 2.0 ECOBLUE 205 10AT', img: 'https://images.aksamoto.com.tr/2026/07/01/y8832497_20260701134200.jpeg', year: 2024, detayUrl: 'https://aksamoto.com.tr/detay/201748188/hasarli-oto-2024-ford-ranger-wildtrak-4x4-20-ecoblue-205-10at' },
+      { id: 19, aracNo: '201748610', brand: 'SKODA', model: 'OCTAVIA PREMIUM 1.5 TSI ACT e-TEC 150 DSG', img: 'https://images.aksamoto.com.tr/2026/07/02/y3197263_20260702151816.jpeg', year: 2023, detayUrl: 'https://aksamoto.com.tr/detay/201748610/hasarli-oto-2023-skoda-octavia-premium-15-tsi-act-e-tec-150-dsg' },
+      { id: 20, aracNo: '201748934', brand: 'SKODA', model: 'SCALA 1.0 TSI 110 DSG PREMIUM', img: 'https://images.aksamoto.com.tr/2026/07/03/y5361994_20260703130700.jpeg', year: 2023, detayUrl: 'https://aksamoto.com.tr/detay/201748934/hasarli-oto-2023-skoda-scala-10-tsi-110-dsg-premium' },
+      { id: 21, aracNo: '201749579', brand: 'VOLKSWAGEN', model: 'JETTA 1.4 TSI (122) COMFORTLINE DSG', img: 'https://images.aksamoto.com.tr/2026/07/07/y5619977_20260707101039.jpeg', year: 2015, detayUrl: 'https://aksamoto.com.tr/detay/201749579/hasarli-oto-2015-volkswagen-jetta-14-tsi-122-comfortline-dsg' },
+      { id: 22, aracNo: '201750053', brand: 'PEUGEOT', model: 'BOXER MINIBUS 16+1 L4H2 2.2 BLUEHDI 140', img: 'https://images.aksamoto.com.tr/2026/07/08/y2696285_20260708085716.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201750053/hasarli-oto-2025-peugeot-boxer-minibis-16-1-l4h2-22-bluehdi-140-15m3-42t-fl' },
+      { id: 23, aracNo: '201750155', brand: 'DACIA', model: 'DUSTER COMFORT 1.5 DCI 4X4 (110)', img: 'https://images.aksamoto.com.tr/2026/07/08/y3447178_20260708095724.jpeg', year: 2018, detayUrl: 'https://aksamoto.com.tr/detay/201750155/hasarli-oto-2018-dacia-duster-comfort-15-dci-4x4-110' },
+      { id: 24, aracNo: '201750756', brand: 'CHERY', model: 'TIGGO 7 PRO MAX EXCEPTIONAL', img: 'https://images.aksamoto.com.tr/2026/07/08/y8891233_20260708162153.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201750756/hasarli-oto-2025-chery-tiggo-7-pro-max-exceptional' },
+      { id: 25, aracNo: '201750769', brand: 'RENAULT', model: 'LATITUDE PRIVILEGE 1.5 DCI 110 E5', img: 'https://images.aksamoto.com.tr/2026/07/08/y3973139_20260708163749.jpeg', year: 2013, detayUrl: 'https://aksamoto.com.tr/detay/201750769/hasarli-oto-2013-renault-latitude-privilege-15-dci-110-e5' },
+      { id: 26, aracNo: '201751093', brand: 'BYD', model: 'SEAL U EV', img: 'https://images.aksamoto.com.tr/2026/07/09/y1946432_20260709090820.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201751093/hasarli-oto-2025-byd-seal-u-ev' },
+      { id: 27, aracNo: '201751308', brand: 'RENAULT', model: 'CLIO HB 1.5 DCI', img: 'https://images.aksamoto.com.tr/2026/07/09/y4193379_20260709101821.jpeg', year: 2017, detayUrl: 'https://aksamoto.com.tr/detay/201751308/hasarli-oto-2017-renault-clio-hb-15-dci' },
+      { id: 28, aracNo: '201751480', brand: 'VOLKSWAGEN', model: 'TRANSPORTER CITY VAN 2.0 5+1 UZUN 150 DSG', img: 'https://images.aksamoto.com.tr/2026/07/09/y5059453_20260709113523.jpeg', year: 2026, detayUrl: 'https://aksamoto.com.tr/detay/201751480/hasarli-oto-2026-volkswagen-transporter-city-van-20-5-1-uzun-150-dsg' },
+      { id: 29, aracNo: '201751766', brand: 'HYUNDAI', model: 'KONA 1.6 CRDI ELITE SMART DCT', img: 'https://images.aksamoto.com.tr/2026/07/09/y6936447_20260709132749.jpeg', year: 2020, detayUrl: 'https://aksamoto.com.tr/detay/201751766/hasarli-oto-2020-hyundai-kona-16-crdi-elite-smart-dct' },
+      { id: 30, aracNo: '201752013', brand: 'BMW', model: 'X1 XDRIVE25E 1.5 245 M SPORT', img: 'https://images.aksamoto.com.tr/2026/07/09/y8651893_20260709155455.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201752013/hasarli-oto-2025-bmw-x1-xdrive25e-15-245-m-sport' },
+      { id: 31, aracNo: '201752901', brand: 'OPEL', model: 'FRONTERA-E 83 KW GS', img: 'https://images.aksamoto.com.tr/2026/07/10/y1186752_20260710085019.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201752901/hasarli-oto-2025-opel-frontera-e-83-kw-gs' },
+      { id: 32, aracNo: '201753034', brand: 'TOYOTA', model: 'COROLLA HYBRID 1.8 DREAM E-CVT FL', img: 'https://images.aksamoto.com.tr/2026/07/10/y2034571_20260710094218.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201753034/hasarli-oto-2025-toyota-corolla-hybrid-18-dream-e-cvt-fl' },
+      { id: 33, aracNo: '201753079', brand: 'BMW', model: '320I SEDAN 1.6 170 M SPORT', img: 'https://images.aksamoto.com.tr/2026/07/10/y2254143_20260710101105.jpeg', year: 2024, detayUrl: 'https://aksamoto.com.tr/detay/201753079/hasarli-oto-2024-bmw-320i-sedan-16-170-m-sport' },
+      { id: 34, aracNo: '201753080', brand: 'VOLVO', model: 'EX40 S.MOTOR EXT.RNG ULT. 150KW', img: 'https://images.aksamoto.com.tr/2026/07/10/y2257619_20260710101246.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201753080/hasarli-oto-2025-volvo-ex40-smotor-extrng-ult-black-eult-150kw' },
+      { id: 35, aracNo: '201755062', brand: 'MERCEDES', model: 'EQB 250+ NIGHT EDITION FL', img: 'https://images.aksamoto.com.tr/2026/07/10/y4793017_20260710142625.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201755062/hasarli-oto-2025-mercedes-eqb-250-night-edition-fl' },
+      { id: 36, aracNo: '201755194', brand: 'MERCEDES', model: 'EQS 450 4MATIC INSPIRATION', img: 'https://images.aksamoto.com.tr/2026/07/10/y6058193_20260710154501.jpeg', year: 2025, detayUrl: 'https://aksamoto.com.tr/detay/201755194/hasarli-oto-2025-mercedes-eqs-450-4matic-inspiration' },
     ];
 
     this.init();
@@ -269,21 +272,17 @@ class AppController {
     let html = '';
     this.garageData.forEach(car => {
       html += `
-        <div class="garage-item glass-panel" onclick="app.viewCarDetail(${car.id})">
+        <div class="garage-item glass-panel" onclick="window.open('${car.detayUrl}', '_blank')">
           <div class="g-image" style="background-image: url('${car.img}')">
-            <div class="g-pill scan-status ${car.statusClass}">${car.status}</div>
+            <div class="g-pill scan-status hasar-orta">${car.year}</div>
           </div>
           <div class="g-content">
             <h3 class="g-title">${car.brand} ${car.model}</h3>
-            <p class="g-meta">${car.year} | ${car.km} km | <i data-lucide="map-pin" class="icon-xs"></i> ${car.location}</p>
+            <p class="g-meta"><i data-lucide="hash" class="icon-xs"></i> Araç No: ${car.aracNo} | <i data-lucide="calendar" class="icon-xs"></i> ${car.year}</p>
             <div class="g-prices">
               <div class="g-price-box">
-                <span class="g-price-label">İhale Teklifi</span>
-                <span class="g-price-val">₺${car.priceAuction}</span>
-              </div>
-              <div class="g-price-box" style="text-align: right;">
-                <span class="g-price-label text-primary">Hemen Al</span>
-                <span class="g-price-val primary">₺${car.priceBuyNow}</span>
+                <span class="g-price-label">aksamoto.com.tr</span>
+                <span class="g-price-val primary" style="font-size: 0.85rem;">Detay İçin Tıklayın →</span>
               </div>
             </div>
           </div>
